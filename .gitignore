@@ -1,0 +1,4 @@
+.venv/
+reverse-string-cli/out/
+.env
+.claude/settings.local.json
