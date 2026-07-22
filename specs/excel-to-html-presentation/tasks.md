@@ -8,7 +8,7 @@
   - Add tests: a valid `.xlsx` fixture (built with `openpyxl` in test setup) with multiple rows parses into the expected `Slide` list; multi-line `Content` cells split correctly.
   - _Requirements: 2.1, 2.2_
 
-- [ ] 2. Handle spreadsheet parsing edge cases and errors
+- [x] 2. Handle spreadsheet parsing edge cases and errors
   - Extend `parse_workbook`: raise `MissingColumnsError` (message names the expected `Title`/`Content`/`Image` layout) if `Title` or `Content` header is absent; wrap `openpyxl` load failures in `InvalidWorkbookError`; return `[]` for a worksheet with no data rows; default a blank `Title` cell to `f"Slide {n}"`; leave `image_path` as `None` for a blank `Image` cell.
   - Add tests for each: missing header columns, corrupt/invalid file, zero data rows, blank title, blank image.
   - _Requirements: 1.3, 1.4, 2.3, 2.4, 2.5_

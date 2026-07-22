@@ -9,6 +9,19 @@ from pathlib import Path
 
 import openpyxl
 
+EXPECTED_COLUMN_LAYOUT = (
+    "The worksheet must have a header row with 'Title' and 'Content' columns "
+    "(an optional 'Image' column is also supported)."
+)
+
+
+class InvalidWorkbookError(Exception):
+    """Raised when the given file cannot be loaded as a valid .xlsx workbook."""
+
+
+class MissingColumnsError(Exception):
+    """Raised when the required 'Title' or 'Content' header column is absent."""
+
 
 @dataclass
 class Slide:
@@ -39,8 +52,20 @@ def parse_workbook(path: Path) -> list[Slide]:
     "Title", "Content", and "Image". Each data row below the header
     becomes one Slide, with the Content cell split on newlines into
     content_lines.
+
+    Raises:
+        InvalidWorkbookError: if the file cannot be loaded as a valid
+            .xlsx workbook (wrong format, corrupted, etc).
+        MissingColumnsError: if the required "Title" or "Content" header
+            column is absent from the worksheet.
     """
-    workbook = openpyxl.load_workbook(path, data_only=True)
+    try:
+        workbook = openpyxl.load_workbook(path, data_only=True)
+    except Exception as exc:
+        raise InvalidWorkbookError(
+            f"Could not open '{path}' as a valid .xlsx workbook: {exc}"
+        ) from exc
+
     worksheet = workbook.worksheets[0]
 
     rows = worksheet.iter_rows(values_only=True)
@@ -56,6 +81,9 @@ def parse_workbook(path: Path) -> list[Slide]:
     title_index = column_index.get("title")
     content_index = column_index.get("content")
     image_index = column_index.get("image")
+
+    if title_index is None or content_index is None:
+        raise MissingColumnsError(EXPECTED_COLUMN_LAYOUT)
 
     slides: list[Slide] = []
     for slide_number, row in enumerate(rows, start=1):
