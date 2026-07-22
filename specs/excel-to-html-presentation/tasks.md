@@ -1,6 +1,6 @@
 # Tasks: Excel to HTML Presentation
 
-- [ ] 1. Scaffold project and implement happy-path spreadsheet parsing
+- [x] 1. Scaffold project and implement happy-path spreadsheet parsing
   - Create `excel-to-html-presentation/src/{xlsx_parser.py,html_generator.py,gui.py,main.py}` and `excel-to-html-presentation/test/`.
   - Install `openpyxl` into the existing `.venv`.
   - Implement the `Slide` dataclass (`title`, `content_lines`, `image_path`) in `xlsx_parser.py`.
